@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package searchPackage;
+
+message Element {
+    int32 id = 1;
+    string name = 2;
+    float price = 3;
+    string category = 4;
+    int32 count = 5;
+}
+
+
+message searchTerm {
+    string term = 1;
+}
+
+
+
+service SearchItem {
+    rpc getSearch(searchTerm) returns (Element);
+}
+
+message empty {}
+
