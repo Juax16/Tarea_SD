@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  redis:
+    container_name: redis
+    image: bitnami/redis:6.2.6
+    environment:
+      - 'ALLOW_EMPTY_PASSWORD=yes'
+
+  # server:
+  #   container_name: serverog
+  #   build: . 
+  #   ports: 
+  #    - "3000:3000"
+  #   depends_on:
+  #    - "database"
+  #    - "redis"
+  client:
+    container_name: client
+    build: grpcClient/
+    ports: 
+     - "30001:30001"
+    depends_on:
+      - "server"
+  server:
+    container_name: server
+    build: grpcServer/
+    ports: 
+     - "30002:30002"
+    depends_on:
+      - "database"
+      - "redis"
+
+        
+
+  database:
+    container_name: database
+    image: bitnami/postgresql:11.15.0
+    restart: always
+    environment:
+      - POSTGRESQL_USERNAME=postgres
+      - POSTGRESQL_DATABASE=tiendita
+      - ALLOW_EMPTY_PASSWORD=yes
+      - POSTGRESQL_PASSWORD=marihuana
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./database/:/docker-entrypoint-initdb.d/init.sql
+      - ./data/postgres/pgdata:/var/lib/postgresql/data/pgdata 
+
+
+
+
